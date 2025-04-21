@@ -1,0 +1,14 @@
+#!/bin/bash
+cd ~/ansible-infra || exit 1
+
+# README erzeugen
+pbdoc > README.md
+
+# Prüfe, ob README.md geändert wurde
+if ! git diff --quiet README.md; then
+  git add README.md
+  git commit -m "📝 Automatische Doku-Aktualisierung (pbdoc)"
+  git push
+else
+  echo "🔍 Keine Änderungen in README.md – kein Commit nötig."
+fi

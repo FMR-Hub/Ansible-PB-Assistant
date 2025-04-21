@@ -1,0 +1,24 @@
+for file in playbooks/*.yml; do
+  path=$(realpath "$file")
+  name=$(basename "$file" .yml)
+
+  if grep -Eq '^#\s*@meta|^#\s*@tag' "$file"; then
+    echo -e "\n📄 $path\n"
+    echo "$name"
+    echo ""
+
+    # Alle Zeilen mit @meta oder @tag ausgeben, formatiert
+    grep -E '^#\s*@meta|^#\s*@tag' "$file" \
+      | sed -E 's/^#\s*//g' \
+      | sed -E 's/@meta[ \t]+([a-zA-Z0-9_-]+):[ \t]*/\1: /' \
+      | sed -E 's/@tag:[ \t]*/tags: /'
+
+    echo "----------------------------"
+  else
+    echo -e "\n📄 $path"
+    echo "$name"
+    echo "Keine @meta- oder @tag-Informationen gefunden."
+    echo "----------------------------"
+  fi
+done
+

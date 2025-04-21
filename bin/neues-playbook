@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Zielverzeichnis
+TARGET_DIR=~/ansible-infra/playbooks
+
+# Dateiname als Argument erwartet
+if [ -z "$1" ]; then
+  echo "❌ Bitte gib den Namen des Playbooks an (ohne .yml)"
+  echo "➡️  Beispiel: neues-playbook mein-playbook"
+  exit 1
+fi
+
+filename="${1%.yml}.yml"
+fullpath="$TARGET_DIR/$filename"
+
+if [ -f "$fullpath" ]; then
+  echo "❗ Datei '$filename' existiert bereits im Playbook-Verzeichnis."
+  exit 1
+fi
+
+# Datei erzeugen
+cat > "$fullpath" <<EOF
+# 📄 @meta name: $filename
+# 📝 @meta description: 
+# 👤 @meta author: Techniker@zerberus-it.de
+# 🧩 @meta version: 1.0
+# 🚦 @meta status: in_planung
+#     in_planung | WIP | Produktiv | Sandbox
+# 🏢 @meta kunde: 
+# 🏷️ @tag: 
+#     z.B. Ubuntu, Install, Update, Infrastruktur, Netzwerk, APT, PIP
+---
+- name: $filename
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Beispielaufgabe
+      debug:
+        msg: "Playbook $filename wurde erfolgreich erstellt."
+EOF
+
+echo "✅ Playbook '$filename' wurde erstellt in $TARGET_DIR"
+
+# Auswahl Editor
+echo ""
+echo "Welchen Editor möchtest du verwenden?"
+echo "[1] nano (einfach)"
+echo "[2] vim (fortgeschritten)"
+read -p "Auswahl [1/2]: " editorwahl
+
+case "$editorwahl" in
+  1|"")
+    nano "$fullpath"
+    ;;
+  2)
+    vim "$fullpath"
+    ;;
+  *)
+    echo "❌ Ungültige Auswahl. Datei wurde nicht geöffnet."
+    ;;
+esac
