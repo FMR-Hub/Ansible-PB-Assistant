@@ -1,3 +1,31 @@
+# 📄 Einzelnes Playbook anzeigen, wenn ein Dateiname übergeben wurde
+if [[ -n "$1" ]]; then
+  file="playbooks/$1.yml"
+
+  if [[ -f "$file" ]]; then
+    path=$(realpath "$file")
+    name=$(basename "$file" .yml)
+
+    echo -e "\n📄 $path\n"
+    echo "$name"
+    echo ""
+
+    if grep -Eq '^#\s*@meta|^#\s*@tag' "$file"; then
+      grep -E '^#\s*@meta|^#\s*@tag' "$file" \
+        | sed -E 's/^#\s*//g' \
+        | sed -E 's/@meta[ \t]+([a-zA-Z0-9_-]+):[ \t]*/\1: /' \
+        | sed -E 's/@tag:[ \t]*/tags: /'
+    else
+      echo "Keine @meta- oder @tag-Informationen gefunden."
+    fi
+
+    echo "----------------------------"
+    exit 0
+  else
+    echo "❌ Playbook nicht gefunden: $file"
+    exit 1
+  fi
+fi
 for file in playbooks/*.yml; do
   path=$(realpath "$file")
   name=$(basename "$file" .yml)
