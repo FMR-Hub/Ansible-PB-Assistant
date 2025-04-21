@@ -20,14 +20,14 @@ fi
 
 # Datei erzeugen
 cat > "$fullpath" <<EOF
-# 📄 @meta name: $filename
-# 📝 @meta description: 
-# 👤 @meta author: Techniker@zerberus-it.de
-# 🧩 @meta version: 1.0
-# 🚦 @meta status: in_planung
+# @meta 📄 name: $filename
+# @meta 📝 description:
+# @meta 👤 author: Techniker@
+# @meta 🧩 version: 1.0
+# @meta 🚦 status: in_planung
 #     in_planung | WIP | Produktiv | Sandbox
-# 🏢 @meta kunde: 
-# 🏷️ @tag: 
+# @meta 🏢 kunde:
+# @tag 🏷️:
 #     z.B. Ubuntu, Install, Update, Infrastruktur, Netzwerk, APT, PIP
 ---
 - name: $filename
