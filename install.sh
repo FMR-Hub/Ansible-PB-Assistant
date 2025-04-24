@@ -1,10 +1,10 @@
 #!/bin/bash
 
-TOOL_DIR="$HOME/Ansible-PB-Assistant"
+TOOL_DIR="$HOME/ansibro"
 BIN_DIR="$TOOL_DIR/bin"
 BASHRC="$HOME/.bashrc"
 
-echo "🔧 Installiere Ansible-PB-Assistant..."
+echo "🔧 Installiere AnsiBro den Ansible Assistant..."
 
 # 1. PATH setzen, wenn noch nicht vorhanden
 if ! grep -q "$BIN_DIR" <<< "$PATH"; then
