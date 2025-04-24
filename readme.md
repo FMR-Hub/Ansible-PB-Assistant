@@ -1,4 +1,4 @@
-# 🔧 Ansible-PB-Assistant
+# 🔧 AnsiBro
 
 ____________________             _____                .__         __                 __   
 \______   \______   \           /  _  \   ______ _____|__| ______/  |_  ____   _____/  |_ 
@@ -26,7 +26,7 @@ Ein leichtgewichtiges Toolset zur Automatisierung und Dokumentation von Ansible-
 ## ⚙️ Installation
 
 ```bash
-git clone git@github.com:FMR-Hub/Ansible-PB-Assistant.git
-cd Ansible-PB-Assistant
+git clone git@github.com:FMR-Hub/ansibro.git
+cd ansibro
 ./install.sh
 source ~/.bashrc  # oder Terminal neu starten
