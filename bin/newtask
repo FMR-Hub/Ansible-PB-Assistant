@@ -1,0 +1,83 @@
+#!/bin/bash
+
+ROLE_DIR=roles
+TASK_REPO=task-repo/all_tasks
+HEADER_TEMPLATE=templates/task-header.tpl
+
+# Sicherstellen, dass zentrale Verzeichnisse existieren
+mkdir -p "$TASK_REPO"
+mkdir -p "$(dirname "$HEADER_TEMPLATE")"
+
+# Sicherstellen, dass die Header-Vorlage existiert
+if [ ! -f "$HEADER_TEMPLATE" ]; then
+  echo "❌ Header-Template nicht gefunden: $HEADER_TEMPLATE"
+  echo "➡️  Lege eine Datei 'task-header.tpl' im templates/-Ordner an."
+  exit 1
+fi
+
+# Taskname abfragen
+read -p "📝 Wie soll die Task-Datei heißen? (ohne .yml): " taskname
+filename="${taskname%.yml}.yml"
+
+# Verfügbare Rollen anzeigen
+echo ""
+echo "📁 Verfügbare Rollen:"
+rollen=($(find "$ROLE_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort))
+for i in "${!rollen[@]}"; do
+  echo "  [$((i+1))] ${rollen[$i]}"
+done
+echo "  [n] Neue Rolle anlegen"
+read -p "➡️  Wähle Nummer oder gib neuen Rollennamen ein: " rollewahl
+
+# Rollenwahl verarbeiten
+if [[ "$rollewahl" == "n" || "$rollewahl" == "N" ]]; then
+  read -p "🆕 Name der neuen Rolle: " neue_rolle
+  rolle="$neue_rolle"
+  mkdir -p "$ROLE_DIR/$rolle/tasks"
+elif [[ "$rollewahl" =~ ^[0-9]+$ && "$rollewahl" -ge 1 && "$rollewahl" -le "${#rollen[@]}" ]]; then
+  rolle="${rollen[$((rollewahl-1))]}"
+else
+  echo "❌ Ungültige Eingabe – abbrechen."
+  exit 1
+fi
+
+# Pfade setzen
+task_path="$ROLE_DIR/$rolle/tasks/$filename"
+task_copy="$TASK_REPO/$filename"
+
+# Existenzprüfung
+if [ -f "$task_path" ]; then
+  echo "❗ Datei '$filename' existiert bereits in $task_path"
+  exit 1
+fi
+
+# Datei erzeugen mit Template + Platzhalterersetzung
+sed "s/{{NAME}}/$filename/g; s/{{ROLLE}}/$rolle/g" "$HEADER_TEMPLATE" > "$task_path"
+
+# Task-Kopie in task-repo ablegen
+cp "$task_path" "$task_copy"
+
+# Ausgabe
+echo ""
+echo "✅ Task-Datei '$filename' wurde erstellt:"
+echo "   → $task_path"
+echo "   → Kopie: $task_copy"
+
+# Editor öffnen
+echo ""
+echo "Welchen Editor möchtest du verwenden?"
+echo "[1] nano (einfach)"
+echo "[2] vim (fortgeschritten)"
+read -p "Auswahl [1/2]: " editorwahl
+
+case "$editorwahl" in
+  1|"")
+    nano "$task_path"
+    ;;
+  2)
+    vim "$task_path"
+    ;;
+  *)
+    echo "❌ Ungültige Auswahl. Datei wurde nicht geöffnet."
+    ;;
+esac
